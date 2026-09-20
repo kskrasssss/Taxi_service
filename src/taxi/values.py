@@ -3,6 +3,7 @@ from __future__ import annotations
 from functools import total_ordering
 from typing import Any
 
+from dataclasses import dataclass
 
 @total_ordering
 class GeoPoint:
@@ -47,3 +48,21 @@ class GeoPoint:
 
     def __hash__(self) -> int:
         return hash(self._key())
+
+@dataclass(frozen=True, slots=True, order=True)
+class GeoPointDC:
+    """Та сама поведінка, але через dataclass."""
+
+    lat: float
+    lon: float
+
+    def __post_init__(self) -> None:
+        if not -90 <= self.lat <= 90:
+            raise ValueError("широта повинна бути в межах [-90, 90]")
+        if not -180 <= self.lon <= 180:
+            raise ValueError("довгота повинна бути в межах [-180, 180]")
+
+    def __str__(self) -> str:
+        ns = "N" if self.lat >= 0 else "S"
+        ew = "E" if self.lon >= 0 else "W"
+        return f"{abs(self.lat)}°{ns}, {abs(self.lon)}°{ew}"

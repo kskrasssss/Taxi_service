@@ -66,6 +66,21 @@ class Fleet:
             return self._index[ride_id]
         except KeyError:
             raise EntityNotFound(ride_id) from None
+
+
+    def __add__(self, other: object) -> Fleet:
+        if not isinstance(other, Fleet):
+            return NotImplemented
+        merged = Fleet(self._rides)
+        for ride in other:
+            if ride.ride_id not in merged._index:
+                merged._append(ride)
+        return merged
+
+    def __radd__(self, other: object) -> Fleet:
+        if other == 0:              # sum() починає з 0
+            return Fleet(self._rides)
+        return self.__add__(other)  # тут поверне NotImplemented -> TypeError
     
 
 

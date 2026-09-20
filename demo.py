@@ -114,5 +114,17 @@ def demo_task3() -> None:
     print("get('R-1003'):", fleet.get("R-1003"))
     attempt("get('R-9999')", lambda: fleet.get("R-9999"))
 
+def demo_task4_fleet() -> None:
+    section("Завдання 4. Оператори над Fleet")
+    fleet = Fleet(make_rides())
+    f1, f2, f3 = fleet[0:2], fleet[1:4], fleet[3:5]
+    print("f1:", [r.ride_id for r in f1])
+    print("f2:", [r.ride_id for r in f2])
+    print("f1 + f2:", [r.ride_id for r in f1 + f2], "(без дублікатів)")
+    total = sum([f1, f2, f3])
+    print("sum:", [r.ride_id for r in total], "| тип:", type(total).__name__)
+    attempt("f1 + 5", lambda: f1 + 5)
+    attempt("5 + f1", lambda: 5 + f1)
+
 if __name__ == "__main__":
     main()

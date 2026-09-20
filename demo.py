@@ -139,6 +139,19 @@ def demo_task4_geopoint() -> None:
     print("min:", min(pts), "| max:", max(pts))
     print("sorted:", [str(x) for x in sorted(pts)])
 
+def demo_task5() -> None:
+    section("Завдання 5. Декоратор validated")
+    fleet = Fleet()
+    ok = dict(ride_id="R-1", rider="Іван", distance_km=5, fare=100, rating=5)
+    print("коректно:", fleet.add_ride(**ok))
+    attempt("positive (distance_km=0)", lambda: fleet.add_ride(**{**ok, "ride_id": "R-2", "distance_km": 0}))
+    attempt("positive (fare=-1)", lambda: fleet.add_ride(**{**ok, "ride_id": "R-2", "fare": -1}))
+    attempt("non_empty (rider='  ')", lambda: fleet.add_ride(**{**ok, "ride_id": "R-2", "rider": "  "}))
+    attempt("one_of (rating=9)", lambda: fleet.add_ride(**{**ok, "ride_id": "R-2", "rating": 9}))
+    print("rename_rider:", fleet.rename_rider(old="Іван", new="Іванко"), "поїздка(и)")
+    attempt("rename_rider(new='')", lambda: fleet.rename_rider(old="Іванко", new=""))
+    print("Fleet.add_ride.__name__ =", Fleet.add_ride.__name__)
+
 if __name__ == "__main__":
     main()
     demo_task4_fleet()

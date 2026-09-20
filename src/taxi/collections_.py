@@ -5,6 +5,8 @@ from typing import Iterable, Iterator
 from .entities import Ride
 from .errors import DuplicateEntity, EntityNotFound
 
+from .decorators import validated
+
 
 class Fleet:
     """Колекція поїздок."""
@@ -81,6 +83,24 @@ class Fleet:
         if other == 0:              # sum() починає з 0
             return Fleet(self._rides)
         return self.__add__(other)  # тут поверне NotImplemented -> TypeError
+
+
+    @validated(ride_id="non_empty", rider="non_empty", distance_km="positive",
+               fare="positive", rating="one_of:1,2,3,4,5")
+    def add_ride(self, *, ride_id: str, rider: str, distance_km: float,
+                 fare: float, rating: int) -> Ride:
+        ride = Ride(ride_id, rider, distance_km, fare, rating)
+        self._append(ride)
+        return ride
+
+    @validated(old="non_empty", new="non_empty")
+    def rename_rider(self, *, old: str, new: str) -> int:
+        count = 0
+        for ride in self._rides:
+            if ride.rider == old:
+                ride.rider = new
+                count += 1
+        return count
     
 
 

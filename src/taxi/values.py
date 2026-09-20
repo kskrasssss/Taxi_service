@@ -49,6 +49,24 @@ class GeoPoint:
     def __hash__(self) -> int:
         return hash(self._key())
 
+
+    def __add__(self, other: object) -> GeoPoint:
+        if not isinstance(other, GeoPoint):
+            return NotImplemented
+        return GeoPoint(self.lat + other.lat, self.lon + other.lon)
+
+    def __sub__(self, other: object) -> GeoPoint:
+        if not isinstance(other, GeoPoint):
+            return NotImplemented
+        return GeoPoint(self.lat - other.lat, self.lon - other.lon)
+
+    def __mul__(self, k: object) -> GeoPoint:
+        if isinstance(k, bool) or not isinstance(k, (int, float)):
+            return NotImplemented
+        return GeoPoint(self.lat * k, self.lon * k)
+
+    __rmul__ = __mul__
+
 @dataclass(frozen=True, slots=True, order=True)
 class GeoPointDC:
     """Та сама поведінка, але через dataclass."""

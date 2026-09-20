@@ -126,5 +126,20 @@ def demo_task4_fleet() -> None:
     attempt("f1 + 5", lambda: f1 + 5)
     attempt("5 + f1", lambda: 5 + f1)
 
+def demo_task4_geopoint() -> None:
+    p, q = GeoPoint(10, 20), GeoPoint(5, 5)
+    print("\n-- арифметика GeoPoint --")
+    print("p + q:", repr(p + q))
+    print("p - q:", repr(p - q))
+    print("p * 2:", repr(p * 2))
+    print("2 * p:", repr(2 * p))
+    attempt("p + 10", lambda: p + 10)
+    attempt("GeoPoint(80,0) + GeoPoint(20,0)", lambda: GeoPoint(80, 0) + GeoPoint(20, 0))
+    pts = [GeoPoint(10, 20), GeoPoint(-5, 3), GeoPoint(10, 5)]
+    print("min:", min(pts), "| max:", max(pts))
+    print("sorted:", [str(x) for x in sorted(pts)])
+
 if __name__ == "__main__":
     main()
+    demo_task4_fleet()
+    demo_task4_geopoint()

@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
+from taxi.context import DispatchSession
+
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from taxi import GeoPoint, GeoPointDC,  Ride, Fleet
@@ -152,7 +154,36 @@ def demo_task5() -> None:
     attempt("rename_rider(new='')", lambda: fleet.rename_rider(old="Іванко", new=""))
     print("Fleet.add_ride.__name__ =", Fleet.add_ride.__name__)
 
+def demo_task6() -> None:
+    section("Завдання 6. DispatchSession")
+    fleet = Fleet(make_rides()[:2])
+    print("до:", [r.ride_id for r in fleet])
+
+    with DispatchSession(fleet) as s:
+        s.add_ride(ride_id="R-7001", rider="Анна", distance_km=4, fare=90, rating=5)
+        s.add_ride(ride_id="R-7002", rider="Богдан", distance_km=6, fare=110, rating=4)
+    print("після успішного сеансу:", [r.ride_id for r in fleet])
+
+    before = [r.ride_id for r in fleet]
+    try:
+        with DispatchSession(fleet) as s:
+            s.add_ride(ride_id="R-8001", rider="Х", distance_km=1, fare=50, rating=3)
+            s.rename_rider(old="Іван", new="ЗМІНЕНО")   # часткова зміна
+            s.add_ride(ride_id="R-8002", rider="Y", distance_km=2, fare=60, rating=4)
+            raise RuntimeError("збій під час сеансу")
+    except RuntimeError as e:
+        print("виняток дійшов до main:", e)
+    print("до блоку :", before)
+    print("після    :", [r.ride_id for r in fleet])
+    print("стан збігається:", before == [r.ride_id for r in fleet])
+    print("ім'я 'Іван' відновлено:", fleet.get("R-1001").rider)
+
 if __name__ == "__main__":
     main()
+    demo_task1()
+    demo_task2()
+    demo_task3()
     demo_task4_fleet()
     demo_task4_geopoint()
+    demo_task5()
+    demo_task6()

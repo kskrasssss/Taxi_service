@@ -38,3 +38,27 @@ class Fleet:
 
     def __repr__(self) -> str:
         return f"Fleet({self._rides!r})"
+
+    def pages(self, page_size: int) -> FleetPages:
+        return FleetPages(self, page_size)
+
+
+class FleetPages:
+    """Ітератор посторінкового обходу Fleet."""
+
+    def __init__(self, fleet: Fleet, page_size: int) -> None:
+        if page_size <= 0:
+            raise ValueError("розмір сторінки повинен бути додатним")
+        self._fleet = fleet          # посилання, без копіювання
+        self._page_size = page_size
+        self._pos = 0
+
+    def __iter__(self) -> FleetPages:
+        return self
+
+    def __next__(self) -> list[Ride]:
+        if self._pos >= len(self._fleet):
+            raise StopIteration
+        page = list(self._fleet[self._pos:self._pos + self._page_size])
+        self._pos += self._page_size
+        return page

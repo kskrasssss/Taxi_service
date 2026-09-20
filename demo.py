@@ -97,6 +97,22 @@ def demo_task3() -> None:
     print("for:")
     for ride in fleet:
         print("  ", ride)
+        print("\n-- pages(2) --")
+
+
+    for i, page in enumerate(fleet.pages(2), 1):
+        print(f"  сторінка {i}: {[r.ride_id for r in page]}")
+
+
+    print("\n-- запити через __call__ --")
+    print("min_rating=4:", [r.ride_id for r in fleet(min_rating=4)])
+    print("rider='Іван':", [r.ride_id for r in fleet(rider="Іван")])
+    print("обидва:", [r.ride_id for r in fleet(min_rating=4, rider="Іван")])
+    attempt("fleet(colour='x')", lambda: fleet(colour="x"))
+
+    print("\n-- get (EAFP) --")
+    print("get('R-1003'):", fleet.get("R-1003"))
+    attempt("get('R-9999')", lambda: fleet.get("R-9999"))
 
 if __name__ == "__main__":
     main()

@@ -39,8 +39,34 @@ class Fleet:
     def __repr__(self) -> str:
         return f"Fleet({self._rides!r})"
 
+
+
     def pages(self, page_size: int) -> FleetPages:
         return FleetPages(self, page_size)
+
+    _CRITERIA = ("min_rating", "rider")
+
+    def __call__(self, **criteria) -> Fleet:
+        unknown = set(criteria) - set(self._CRITERIA)
+        if unknown:
+            raise TypeError(
+                f"невідомі критерії: {', '.join(sorted(unknown))}. "
+                f"Припустимі: {', '.join(self._CRITERIA)}"
+            )
+        min_rating = criteria.get("min_rating")
+        rider = criteria.get("rider")
+        return Fleet(
+            r for r in self._rides
+            if (min_rating is None or r.rating >= min_rating)
+            and (rider is None or r.rider == rider)
+        )
+
+    def get(self, ride_id: str) -> Ride:
+        try:
+            return self._index[ride_id]
+        except KeyError:
+            raise EntityNotFound(ride_id) from None
+    
 
 
 class FleetPages:

@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from taxi import GeoPoint, GeoPointDC,  Ride
+from taxi import GeoPoint, GeoPointDC,  Ride, Fleet
 
 
 def section(title: str) -> None:
@@ -83,6 +83,20 @@ def demo_task2() -> None:
     for v in ("R-1001", "R-", "1001", "r-5"):
         print(f"  {v!r}: {Ride.is_valid_ride_id(v)}")
 
+
+
+def demo_task3() -> None:
+    section("Завдання 3. Колекція Fleet")
+    fleet = Fleet(make_rides())
+    print("len:", len(fleet))
+    print("fleet[0]:", fleet[0])
+    sl = fleet[0:2]
+    print("fleet[0:2] тип:", type(sl).__name__, "->", sl)
+    print("R-1002 in fleet:", "R-1002" in fleet, "| fleet[1] in fleet:", fleet[1] in fleet)
+    print("R-9999 in fleet:", "R-9999" in fleet)
+    print("for:")
+    for ride in fleet:
+        print("  ", ride)
 
 if __name__ == "__main__":
     main()
